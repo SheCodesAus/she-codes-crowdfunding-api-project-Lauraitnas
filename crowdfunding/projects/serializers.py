@@ -1,5 +1,16 @@
 from rest_framework import serializers
-from .models import Project, Pledge
+from .models import Project, Pledge, Comments, Subscription
+
+
+class CommentsSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
+    comment_txt = serializers.CharField(max_length=200)
+    user = serializers.CharField(max_length=200)
+    project_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return Comments.objects.create(**validated_data)
+
 
 class PledgeSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -14,6 +25,19 @@ class PledgeSerializer(serializers.Serializer):
 
 
 
+class SubscriptionSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
+    amount = serializers.IntegerField()
+    supporter = serializers.CharField(max_length=200)
+    association_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return Subscription.objects.create(**validated_data)
+
+
+
+
+
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField(max_length=200)
@@ -21,8 +45,10 @@ class ProjectSerializer(serializers.Serializer):
     goal = serializers.IntegerField()
     image = serializers.URLField()
     is_open = serializers.BooleanField()
-    date_created = serializers.DateTimeField()
+    date_created = serializers.ReadOnlyField()
+    deadline = serializers.DateTimeField()
     owner = serializers.ReadOnlyField(source='owner.id')
+    categories = serializers.CharField(max_length=200)
     # owner = serializers.CharField(max_length=200)
     # pledges = PledgeSerializer(many=True, read_only=True)
 
