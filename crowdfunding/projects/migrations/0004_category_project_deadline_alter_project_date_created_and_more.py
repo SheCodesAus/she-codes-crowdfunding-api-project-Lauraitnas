@@ -48,7 +48,6 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('amount', models.IntegerField()),
                 ('is_active', models.BooleanField()),
-                ('association', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscription', to='users.association')),
                 ('supporter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supporter_subscriptions', to=settings.AUTH_USER_MODEL)),
             ],
         ),

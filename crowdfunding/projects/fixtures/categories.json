@@ -1,1 +1,26 @@
-[{"model": "projects.category", "pk": 1, "fields": {"name": "We build"}}, {"model": "projects.category", "pk": 2, "fields": {"name": "We protect"}}, {"model": "projects.category", "pk": 3, "fields": {"name": "We plant"}}]
+[
+    {
+        "model": "projects.category",
+        "pk": 1,
+        "fields": {
+            "name": "We Restore",
+            "slug": "we_restore"
+        }
+    },
+    {
+        "model": "projects.category",
+        "pk": 2,
+        "fields": {
+            "name": "We Protect",
+            "slug": "we_protect"
+        }
+    },
+    {
+        "model": "projects.category",
+        "pk": 3,
+        "fields": {
+            "name": "We Plant",
+            "slug": "we_plant"
+        }
+    }
+]

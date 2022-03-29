@@ -1,0 +1,11 @@
+[
+    {
+        "model": "users.association",
+        "pk": 1,
+        "fields": {
+            "association_number": 2343256,
+            "location": "Perth",
+            "user": 1
+        }
+    }
+]

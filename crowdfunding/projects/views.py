@@ -1,12 +1,10 @@
-from functools import partial
-from urllib import response
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Project, Pledge
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer
+from .models import Project, Pledge, Comments, Category
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, CommentsSerializer, CategorySerializer
 from django.http import Http404
-from rest_framework import status, permissions
-from .permissions import IsOwnerOrReadOnly
+from rest_framework import status, permissions, generics
+from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
 
 
 class PledgeList(APIView):
@@ -28,6 +26,24 @@ class PledgeList(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class CategoryDetail(APIView):
+    
+    def get_object(self, **kwargs):
+        try:
+            if "slug" in kwargs:
+                return Category.objects.get(slug=kwargs["slug"])
+            return Category.objects.get(pk=kwargs["pk"])
+        except Category.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, **kwargs):
+        category = self.get_object(**kwargs)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+
 
 class PledgeDetail(APIView):
     
@@ -96,3 +112,17 @@ class ProjectDetail(APIView):
         )
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+
+class CommentListApi(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Comments.objects.filter(visible=True)
+    serializer_class = CommentsSerializer
+
+class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+    queryset = Comments.objects.filter(visible=True)
+    serializer_class = CommentsSerializer

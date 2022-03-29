@@ -1,14 +1,20 @@
+from email.policy import default
 from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.forms import CharField, SlugField
-from users.models import Association
+#from users.models import Association
 
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        abstract = True
 
 class Category(models.Model):
-    name = models.CharField(max_length=50)
-    slug = models.SlugField()
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(unique=True)
     
 
 
@@ -21,34 +27,37 @@ class Project(models.Model):
     date_created = models.DateTimeField(auto_now=True, blank=True)
     deadline = models.DateTimeField(null=True)
     # owner = models.CharField(max_length=200)
-    owner = models.ForeignKey(
-        get_user_model(),
+    association = models.ForeignKey(
+        'Association',
         on_delete=models.CASCADE,
-        related_name='owner_projects'
+        related_name='projects',
+
     )
-    categories = models.ForeignKey(
+    category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        related_name='category',
-        null=True,
+        related_name='projects',
+        null=True
     )
 
-class Comments(models.Model):
-    comment_txt = models.TextField(null=True)
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name='owner_comment'
-    )
+class Comments(BaseModel):
     project = models.ForeignKey(
         'Project',
         on_delete=models.CASCADE,
         related_name='comment'
     )
+    comment_txt = models.TextField(null=True)
+    date_posted = models.DateTimeField(auto_now=True, blank=True)
+    visible = models.BooleanField(default=True)
+    author = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+
 
 class Pledge(models.Model):
     amount = models.IntegerField()
-    comment = models.CharField(max_length=200)
     anonymous = models.BooleanField()
     project = models.ForeignKey(
         'Project',
@@ -62,17 +71,9 @@ class Pledge(models.Model):
         related_name='supporter_pledges'
     )
 
-class Subscription(models.Model):
-    amount = models.IntegerField()
-    is_active = models.BooleanField()
-    supporter = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name='supporter_subscriptions'
-    )
-    association = models.ForeignKey(
-        Association,
-        on_delete=models.CASCADE,
-        related_name='subscription'
-    )
+
+class Association(models.Model):
+    association_number = models.CharField(max_length=200)
+    location = models.CharField(max_length=200)
+    user = models.OneToOneField(get_user_model(), related_name="associations", on_delete=models.CASCADE, null=True)
 
