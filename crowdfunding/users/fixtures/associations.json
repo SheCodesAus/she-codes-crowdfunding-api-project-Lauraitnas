@@ -1,6 +1,6 @@
 [
     {
-        "model": "users.association",
+        "model": "projects.association",
         "pk": 1,
         "fields": {
             "association_number": 2343256,
