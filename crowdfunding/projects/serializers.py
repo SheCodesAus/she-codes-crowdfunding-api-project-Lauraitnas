@@ -63,7 +63,7 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.is_open = validated_data.get('is_open', instance.is_open)
         instance.date_created = validated_data.get('date_created', instance.date_created)
         instance.deadline = validated_data.get('deadline', instance.deadline)
-        instance.owner = validated_data.get('owner', instance.owner)
+        instance.association = validated_data.get('association', instance.association)
         instance.category = validated_data.get('category', instance.category)
         instance.save()
         return instance
