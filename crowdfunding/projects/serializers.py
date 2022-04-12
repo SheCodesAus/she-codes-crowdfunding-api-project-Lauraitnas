@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Project, Pledge, Comments
+from .models import Category, Project, Pledge, Comments, Association
 from django.contrib.auth import get_user_model
 
 
@@ -13,11 +13,8 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comments
-
         exclude = ['visible']
     
-
-
 
 
 class PledgeSerializer(serializers.Serializer):
@@ -69,3 +66,20 @@ class ProjectDetailSerializer(ProjectSerializer):
         return instance
 
 
+# class AssociationSerializer(serializers.Serializer):
+#     id = serializers.ReadOnlyField()
+#     association_number = serializers.CharField(max_length=200)
+#     location = serializers.CharField(max_length=200)
+#     user = serializers.ReadOnlyField(source='user.id')
+
+
+#     def create(self, validated_data):
+#         return Association.objects.create(**validated_data)
+
+
+
+class AssociationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Association
+        fields = ('association_number', 'location', 'user')

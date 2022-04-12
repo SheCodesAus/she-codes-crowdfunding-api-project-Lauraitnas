@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Project, Pledge, Comments, Category
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, CommentsSerializer, CategorySerializer
+from .models import Association, Project, Pledge, Comments, Category
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, CommentsSerializer, CategorySerializer, AssociationSerializer
 from django.http import Http404
-from rest_framework import status, permissions, generics
+from rest_framework import status, permissions, generics, exceptions
 from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
 
 
@@ -69,9 +69,11 @@ class ProjectList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        if not request.user.associations:
+            raise exceptions.PermissionDenied("user has no associations")
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)
+            serializer.save(association=request.user.associations)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED)
@@ -126,3 +128,52 @@ class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     queryset = Comments.objects.filter(visible=True)
     serializer_class = CommentsSerializer
+
+
+class AssociationList(APIView):
+
+    def get(self, request, pk):
+        associations = Association.objects.all()
+        serializer = AssociationSerializer(associations, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = AssociationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+class AssociationDetail(APIView):
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
+
+    def get_object(self, pk):
+        try:
+            # return Project.objects.get(pk=pk)
+            association = Association.objects.get(pk=pk)
+            self.check_object_permissions(self.request, association)
+            return association
+        except Association.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        association = self.get_object(pk)
+        serializer = AssociationSerializer(association)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        association = self.get_object(pk)
+        data = request.data
+        serializer = AssociationSerializer(
+            instance=association,
+            data=data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
