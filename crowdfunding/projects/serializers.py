@@ -79,6 +79,7 @@ class ProjectDetailSerializer(ProjectSerializer):
 
 
 class AssociationSerializer(serializers.ModelSerializer):
+    # user = serializers.ReadOnlyField()
 
     class Meta:
         model = Association

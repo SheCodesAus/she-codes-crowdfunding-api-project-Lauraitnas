@@ -130,50 +130,25 @@ class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentsSerializer
 
 
-class AssociationList(APIView):
+class AssociationList(generics.ListCreateAPIView):
 
-    def get(self, request, pk):
-        associations = Association.objects.all()
-        serializer = AssociationSerializer(associations, many=True)
-        return Response(serializer.data)
+    queryset = Association.objects.all()
+    serializer_class = AssociationSerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+    ]
 
-    def post(self, request):
-        serializer = AssociationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors)
+    def perform_create(self, serializer):
+        if self.request.user.associations:
+            raise exceptions.ValidationError("you already have an association")
+        serializer.save(user=self.request.user)
 
-class AssociationDetail(APIView):
+
+class AssociationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Association.objects.all()
+    serializer_class = AssociationSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly
     ]
 
-    def get_object(self, pk):
-        try:
-            # return Project.objects.get(pk=pk)
-            association = Association.objects.get(pk=pk)
-            self.check_object_permissions(self.request, association)
-            return association
-        except Association.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk):
-        association = self.get_object(pk)
-        serializer = AssociationSerializer(association)
-        return Response(serializer.data)
-
-    def put(self, request, pk):
-        association = self.get_object(pk)
-        data = request.data
-        serializer = AssociationSerializer(
-            instance=association,
-            data=data,
-            partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
