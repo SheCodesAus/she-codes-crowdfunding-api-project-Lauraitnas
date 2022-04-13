@@ -79,8 +79,8 @@ class ProjectDetailSerializer(ProjectSerializer):
 
 
 class AssociationSerializer(serializers.ModelSerializer):
-    # user = serializers.ReadOnlyField()
-
+    user = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    
     class Meta:
         model = Association
         fields = ('association_number', 'location', 'user')

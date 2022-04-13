@@ -5,6 +5,7 @@ from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSeria
 from django.http import Http404
 from rest_framework import status, permissions, generics, exceptions
 from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class PledgeList(APIView):
@@ -138,9 +139,14 @@ class AssociationList(generics.ListCreateAPIView):
         permissions.IsAuthenticatedOrReadOnly,
     ]
 
+
     def perform_create(self, serializer):
-        if self.request.user.associations:
-            raise exceptions.ValidationError("you already have an association")
+        try:
+            if self.request.user.associations:
+                raise exceptions.ValidationError("you already have an association")
+        except ObjectDoesNotExist:
+            # if the user doesn't have a related object then everything is just peachy
+            pass
         serializer.save(user=self.request.user)
 
 
