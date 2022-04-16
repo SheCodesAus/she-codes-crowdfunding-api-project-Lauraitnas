@@ -1,4 +1,4 @@
-from email.policy import default
+# from email.policy import default
 from rest_framework import serializers
 from .models import CustomUser
 from rest_framework.validators import UniqueValidator

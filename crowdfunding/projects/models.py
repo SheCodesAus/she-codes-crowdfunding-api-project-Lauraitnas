@@ -1,5 +1,3 @@
-from email.policy import default
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.forms import CharField, SlugField
