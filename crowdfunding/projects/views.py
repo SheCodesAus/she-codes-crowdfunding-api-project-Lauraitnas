@@ -28,7 +28,7 @@ class PledgeList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
+#get category by id
 class CategoryDetail(APIView):
     
     def get_object(self, **kwargs):
@@ -45,7 +45,7 @@ class CategoryDetail(APIView):
         return Response(serializer.data)
 
 
-
+#get pledge by id
 class PledgeDetail(APIView):
     
     def get_object(self, pk):
@@ -59,7 +59,7 @@ class PledgeDetail(APIView):
         serializer = PledgeSerializer(pledge)
         return Response(serializer.data)
 
-
+#get all projects
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
