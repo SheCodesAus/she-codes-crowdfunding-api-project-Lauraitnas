@@ -4,7 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from .models import CustomUser
-from .serializers import CustomUserSerializer, RegisterSerializer
+from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
+
+from .serializers import CustomUserSerializer, RegisterSerializer, CustomUserDetailSerializer
 
 
 class CustomUserList(APIView):
@@ -23,6 +25,10 @@ class CustomUserList(APIView):
 
 
 class CustomUserDetail(APIView):
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+        ]
 
     def get_object(self, pk):
         try:
@@ -34,6 +40,21 @@ class CustomUserDetail(APIView):
         user = self.get_object(pk)
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+    
+    def put(self, request, pk):
+        
+        user = self.get_object(pk)
+        data = request.data
+        serializer = CustomUserDetailSerializer(
+            instance=user,
+            data=data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer

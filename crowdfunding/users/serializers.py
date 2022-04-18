@@ -20,18 +20,14 @@ class CustomUserSerializer(serializers.Serializer):
     def create(self, validated_data):
         return CustomUser.objects.create(**validated_data)
 
-# class AssociationSerializer(serializers.Serializer):
-#     id = serializers.ReadOnlyField()
-#     username = serializers.CharField(max_length=200)
-#     email = serializers.CharField(max_length=200)
-#     association_number = serializers.CharField(max_length=200)
-#     location = serializers.CharField(max_length=200)
-#     image = serializers.URLField
-#     bio = serializers.CharField(max_length=200)
-#     social = serializers.CharField(max_length=200)
-
-#     def create(self, validated_data):
-#         return Association.objects.create(**validated_data)
+class CustomUserDetailSerializer(CustomUserSerializer):
+    
+    def update(self, instance, validated_data):
+        instance.image = validated_data.get('image', instance.image)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.social=validated_data.get('social', instance.social)
+        instance.save()
+        return instance
 
 
 

@@ -93,7 +93,6 @@ class ProjectDetail(APIView):
 
     def get_object(self, pk):
         try:
-            # return Project.objects.get(pk=pk)
             project = Project.objects.get(pk=pk)
             self.check_object_permissions(self.request, project)
             return project
