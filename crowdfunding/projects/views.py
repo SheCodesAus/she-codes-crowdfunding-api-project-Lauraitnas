@@ -4,7 +4,7 @@ from .models import Association, Project, Pledge, Comments, Category
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, CommentsSerializer, CategorySerializer, AssociationSerializer
 from django.http import Http404
 from rest_framework import status, permissions, generics, exceptions
-from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly, IsProjectAssociationOrReadOnly
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -88,7 +88,7 @@ class ProjectList(APIView):
 class ProjectDetail(APIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly
+        IsProjectAssociationOrReadOnly
     ]
 
     def get_object(self, pk):
@@ -158,7 +158,9 @@ class AssociationDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self, username):
         try:
-            return Association.objects.select_related("user").get(user__username=username)
+            association = Association.objects.select_related("user").get(user__username=username)
+            self.check_object_permissions(self.request, association)
+            return association
         except Association.DoesNotExist:
             raise Http404
 

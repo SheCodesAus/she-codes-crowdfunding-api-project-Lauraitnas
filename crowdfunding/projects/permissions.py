@@ -5,7 +5,14 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.association.id == request.user.id
+        return obj.user == request.user
+
+class IsProjectAssociationOrReadOnly(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.association.user == request.user
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
 
