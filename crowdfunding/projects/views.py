@@ -144,7 +144,6 @@ class AssociationList(generics.ListCreateAPIView):
             if self.request.user.associations:
                 raise exceptions.ValidationError("you already have an association")
         except ObjectDoesNotExist:
-            # if the user doesn't have a related object then everything is just peachy
             pass
         serializer.save(user=self.request.user)
 
@@ -157,3 +156,13 @@ class AssociationDetail(generics.RetrieveUpdateDestroyAPIView):
         IsOwnerOrReadOnly
     ]
 
+    def get_object(self, username):
+        try:
+            return Association.objects.select_related("user").get(user__username=username)
+        except Association.DoesNotExist:
+            raise Http404
+
+    def get(self, request, username):
+        association = self.get_object(username)
+        serializer = AssociationSerializer(association)
+        return Response(serializer.data)

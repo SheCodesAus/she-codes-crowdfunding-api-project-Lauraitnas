@@ -71,6 +71,7 @@ class Pledge(models.Model):
 
 
 class Association(models.Model):
+    # association_name = models.CharField(max_length=200, null=True, blank=True)
     association_number = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     user = models.OneToOneField(get_user_model(), related_name="associations", on_delete=models.CASCADE, null=True)
