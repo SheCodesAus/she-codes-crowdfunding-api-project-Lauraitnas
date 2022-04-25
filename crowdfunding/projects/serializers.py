@@ -31,6 +31,13 @@ class PledgeSerializer(serializers.Serializer):
         return Pledge.objects.create(**validated_data)
 
 
+class AssociationSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source="user.username")
+    
+    class Meta:
+        model = Association
+        fields = ('id', 'association_number', 'association_name','location', 'user')
+
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField(max_length=200)
@@ -40,7 +47,7 @@ class ProjectSerializer(serializers.Serializer):
     is_open = serializers.BooleanField()
     date_created = serializers.ReadOnlyField()
     deadline = serializers.DateTimeField()
-    association = serializers.ReadOnlyField(source='association.id')
+    association = AssociationSerializer(read_only=True)
     category = serializers.SlugRelatedField(slug_field="slug", queryset=Category.objects.all())
     # owner = serializers.CharField(max_length=200)
     # pledges = PledgeSerializer(many=True, read_only=True)
@@ -51,6 +58,8 @@ class ProjectSerializer(serializers.Serializer):
 
 class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
+    association = AssociationSerializer(read_only=True)
+
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
@@ -66,21 +75,7 @@ class ProjectDetailSerializer(ProjectSerializer):
         return instance
 
 
-# class AssociationSerializer(serializers.Serializer):
-#     id = serializers.ReadOnlyField()
-#     association_number = serializers.CharField(max_length=200)
-#     location = serializers.CharField(max_length=200)
-#     user = serializers.ReadOnlyField(source='user.id')
-
-
-#     def create(self, validated_data):
-#         return Association.objects.create(**validated_data)
 
 
 
-class AssociationSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.username")
-    
-    class Meta:
-        model = Association
-        fields = ('id', 'association_number', 'location', 'user')
+

@@ -29,7 +29,6 @@ class Project(models.Model):
         'Association',
         on_delete=models.CASCADE,
         related_name='projects',
-
     )
     category = models.ForeignKey(
         Category,
@@ -71,7 +70,7 @@ class Pledge(models.Model):
 
 
 class Association(models.Model):
-    # association_name = models.CharField(max_length=200, null=True, blank=True)
+    association_name = models.CharField(max_length=200, null=True, blank=True, default="")
     association_number = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     user = models.OneToOneField(get_user_model(), related_name="associations", on_delete=models.CASCADE, null=True)

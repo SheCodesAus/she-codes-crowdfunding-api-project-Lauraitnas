@@ -168,3 +168,14 @@ class AssociationDetail(generics.RetrieveUpdateDestroyAPIView):
         association = self.get_object(username)
         serializer = AssociationSerializer(association)
         return Response(serializer.data)
+    
+    def put(self, request, username):
+        association = self.get_object(username)
+        data = request.data
+        serializer = AssociationSerializer(association, data=data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
