@@ -73,5 +73,6 @@ class Association(models.Model):
     association_name = models.CharField(max_length=200, null=True, blank=True, default="")
     association_number = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
+    forest_image = models.URLField(null=True, blank=True, default="")
     user = models.OneToOneField(get_user_model(), related_name="associations", on_delete=models.CASCADE, null=True)
 

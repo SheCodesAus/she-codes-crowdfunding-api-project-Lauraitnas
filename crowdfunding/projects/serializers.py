@@ -36,7 +36,7 @@ class AssociationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Association
-        fields = ('id', 'association_number', 'association_name','location', 'user')
+        fields = ('id', 'association_number', 'association_name', 'location', 'forest_image', 'user')
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
