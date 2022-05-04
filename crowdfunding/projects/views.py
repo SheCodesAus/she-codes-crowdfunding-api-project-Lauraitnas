@@ -61,10 +61,7 @@ class PledgeDetail(APIView):
     
     def get_object(self, pk):
         try:
-            p = Pledge.objects.get(pk=pk)
-            if p.is_anonymous:
-                p.supporter = None
-            return p
+            return Pledge.objects.get(pk=pk)
         except Pledge.DoesNotExist:
             raise Http404
 
