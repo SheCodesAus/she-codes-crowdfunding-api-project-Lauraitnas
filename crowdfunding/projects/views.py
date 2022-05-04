@@ -61,7 +61,10 @@ class PledgeDetail(APIView):
     
     def get_object(self, pk):
         try:
-            return Pledge.objects.get(pk=pk)
+            p = Pledge.objects.get(pk=pk)
+            if p.is_anonymous:
+                p.supporter = None
+            return p
         except Pledge.DoesNotExist:
             raise Http404
 
@@ -69,6 +72,8 @@ class PledgeDetail(APIView):
         pledge = self.get_object(pk)
         serializer = PledgeSerializer(pledge)
         return Response(serializer.data)
+
+        
 
 #get all projects
 class ProjectList(APIView):
