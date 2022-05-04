@@ -8,6 +8,7 @@ urlpatterns = [
     path('projects/<int:pk>/', views.ProjectDetail.as_view()),
     path('pledges/', views.PledgeList.as_view()),
     path('comment/', views.CommentListApi.as_view(), name="comment-list"),
+    path('category/', views.CategoryList.as_view(), name="category-list"),
     path('comment/<int:pk>/', views.CommentDetailApi.as_view(), name="comment-detail"),
     path('category/<int:pk>/', views.CategoryDetail.as_view(), name="category-detail"),
     path('category/<str:slug>/', views.CategoryDetail.as_view(), name="category-detail-slug"),

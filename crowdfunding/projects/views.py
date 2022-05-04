@@ -1,3 +1,4 @@
+from unicodedata import category
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Association, Project, Pledge, Comments, Category
@@ -28,7 +29,7 @@ class PledgeList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-#get category by id
+#get category by slug
 class CategoryDetail(APIView):
     
     def get_object(self, **kwargs):
@@ -43,6 +44,16 @@ class CategoryDetail(APIView):
         category = self.get_object(**kwargs)
         serializer = CategorySerializer(category)
         return Response(serializer.data)
+
+#get all categories
+
+class CategoryList(generics.ListCreateAPIView):
+    
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+    ]
 
 
 #get pledge by id
