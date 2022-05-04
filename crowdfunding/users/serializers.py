@@ -12,7 +12,7 @@ class CustomUserSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     username = serializers.CharField(max_length=200)
     email = serializers.CharField(max_length=200)
-    image = serializers.URLField
+    image = serializers.URLField()
     bio = serializers.CharField(max_length=200)
     social = serializers.CharField(max_length=200,)
 
