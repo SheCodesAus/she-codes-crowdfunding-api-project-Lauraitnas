@@ -26,6 +26,7 @@ class PledgeSerializer(serializers.Serializer):
         queryset=get_user_model().objects.all()
     )
     project_id = serializers.IntegerField()
+    # supporter_view = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         return Pledge.objects.create(**validated_data)

@@ -61,12 +61,16 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='pledges'
     )
-    # supporter = models.CharField(max_length=200)
     supporter = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
         related_name='supporter_pledges'
     )
+    # @property
+    # def supporter_view(self):
+    #     if self.anonymous:
+    #         return None
+    #     return self.supporter
 
 
 class Association(models.Model):
