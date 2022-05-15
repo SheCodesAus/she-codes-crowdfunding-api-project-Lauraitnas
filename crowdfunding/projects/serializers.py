@@ -26,7 +26,6 @@ class PledgeSerializer(serializers.Serializer):
         queryset=get_user_model().objects.all()
     )
     project_id = serializers.IntegerField()
-    # supporter_view = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         return Pledge.objects.create(**validated_data)
@@ -44,7 +43,7 @@ class ProjectSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=200)
     description = serializers.CharField(max_length=200)
     goal = serializers.IntegerField()
-    image = serializers.URLField()
+    image = serializers.URLField(max_length=400)
     is_open = serializers.BooleanField()
     date_created = serializers.ReadOnlyField()
     deadline = serializers.DateTimeField()

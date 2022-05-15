@@ -29,30 +29,6 @@ class PledgeList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-# class PledgeList(APIView):
-
-#     def get(self, request):
-#         pledges = Pledge.objects.all()
-#         serializer = PledgeSerializer(pledges, many=True)
-#         try:
-#             if pledges.is_anonymous:
-#                 pledges.supporter = None
-#             return Response(serializer.data)
-
-
-#     def post(self, request):
-#         serializer = PledgeSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(
-#                 serializer.data,
-#                 status=status.HTTP_201_CREATED
-#             )
-#         return Response(
-#             serializer.errors,
-#             status=status.HTTP_400_BAD_REQUEST
-#         )
-
 
 #get category by slug
 class CategoryDetail(APIView):
